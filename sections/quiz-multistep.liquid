@@ -1,0 +1,246 @@
+{{ 'quiz-multistep.min.css' | asset_url | stylesheet_tag }}
+{%- style -%}
+  #quiz-multistep-section-{{ section.id }} {
+    --heading-font-mobile: {{ section.settings.heading_font_mobile }}px;
+    --heading-font-desktop: {{ section.settings.heading_font_desktop }}px;
+    --question-font-mobile: {{ section.settings.question_font_mobile }}px;
+    --question-font-desktop: {{ section.settings.question_font_desktop }}px;
+    padding-top: {{ section.settings.padding_top_mobile }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+  }
+
+  @media screen and (min-width: 768px) {
+    #quiz-multistep-section-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top_desktop }}px;
+      padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+    }
+  }
+
+  #quiz-multistep-section-{{ section.id }}
+  .quiz__heading {
+    font-size: var(--heading-font-mobile);
+  }
+
+  @media screen and (min-width: 768px) {
+    #quiz-multistep-section-{{ section.id }} .quiz__heading {
+      font-size: var(--heading-font-desktop);
+    }
+  }
+
+  #quiz-multistep-section-{{ section.id }}
+  .quiz__summary-text
+  , #quiz-multistep-section-{{ section.id }}
+  .quiz__step-number {
+    font-size: var(--question-font-mobile);
+  }
+
+  @media screen and (min-width: 768px) {
+    #quiz-multistep-section-{{ section.id }} .quiz__summary-text
+    , #quiz-multistep-section-{{ section.id }}
+    .quiz__step-number {
+      font-size: var(--question-font-desktop);
+    }
+  }
+{%- endstyle -%}
+<div
+  id="quiz-multistep-section-{{ section.id }}"
+  class="color-{{ section.settings.color_scheme }} gradient section scroll-trigger animate--fade-in"
+  data-cascade
+  style="--animation-order: 1;">
+  <div class="page-width">
+    <h2
+      class="quiz__heading center scroll-trigger animate--slide-in"
+      data-cascade
+      style="--animation-order: 2;">
+      {{ section.settings.heading }}
+    </h2>
+    <div
+      class="quiz__progress-wrapper scroll-trigger animate--fade-in"
+      data-cascade
+      style="--animation-order: 3;">
+      <div class="quiz__progress-bar">
+        <div class="quiz__progress-fill"></div>
+      </div>
+    </div>
+    <shopify-quiz data-results-label="{{ section.settings.results_label }}">
+      {% for block in section.blocks %}
+        <shopify-question
+          class="scroll-trigger animate--fade-in shopify-question-step"
+          data-cascade
+          style="--animation-order: {{ forloop.index | plus: 2 }};"
+          data-step="{{ forloop.index }}"
+          data-question="{{ block.settings.title }}"
+          data-next-label="{{ block.settings.next_label }}"
+          data-answers='[
+        {"label": "{{ block.settings.answer1_label | escape }}", "tag": "{{ block.settings.answer1_tag | handleize }}"},
+        {"label": "{{ block.settings.answer2_label | escape }}", "tag": "{{ block.settings.answer2_tag | handleize }}"}
+      ]'
+          data-is-last="{% if forloop.last %}true{% else %}false{% endif %}"></shopify-question>
+      {% endfor %}
+    </shopify-quiz>
+    <div
+      id="quiz-results"
+      class="quiz__results hidden scroll-trigger animate--fade-in"
+      data-cascade>
+      <div id="quiz-results-content"></div>
+    </div>
+  </div>
+</div>
+<script src="{{ 'quiz-multistep.min.js' | asset_url }}" defer></script>
+{% schema %}
+  {
+    "name": "Multi-step Quiz",
+    "settings": [
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "Heading",
+        "default": "Find your perfect products!"
+      },
+      {
+        "type": "text",
+        "id": "results_label",
+        "label": "Results button label",
+        "default": "See results"
+      },
+      {
+        "type": "range",
+        "id": "heading_font_mobile",
+        "label": "Heading font size (mobile)",
+        "default": 22,
+        "min": 10,
+        "max": 50,
+        "step": 1
+      },
+      {
+        "type": "range",
+        "id": "heading_font_desktop",
+        "label": "Heading font size (desktop)",
+        "default": 30,
+        "min": 10,
+        "max": 70,
+        "step": 1
+      },
+      {
+        "type": "range",
+        "id": "question_font_mobile",
+        "label": "Question font size (mobile)",
+        "default": 16,
+        "min": 10,
+        "max": 40,
+        "step": 1
+      },
+      {
+        "type": "range",
+        "id": "question_font_desktop",
+        "label": "Question font size (desktop)",
+        "default": 20,
+        "min": 10,
+        "max": 60,
+        "step": 1
+      },
+      {
+        "type": "range",
+        "id": "padding_top_mobile",
+        "label": "Top padding (mobile)",
+        "default": 30,
+        "min": 0,
+        "max": 200,
+        "step": 5
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom_mobile",
+        "label": "Bottom padding (mobile)",
+        "default": 30,
+        "min": 0,
+        "max": 200,
+        "step": 5
+      },
+      {
+        "type": "range",
+        "id": "padding_top_desktop",
+        "label": "Top padding (desktop)",
+        "default": 60,
+        "min": 0,
+        "max": 200,
+        "step": 5
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom_desktop",
+        "label": "Bottom padding (desktop)",
+        "default": 60,
+        "min": 0,
+        "max": 200,
+        "step": 5
+      },
+      {
+        "type": "color_scheme",
+        "id": "color_scheme",
+        "label": "Color scheme",
+        "default": "scheme-1"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "question",
+        "name": "Question",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Question Title",
+            "default": "Which type of product do you prefer?"
+          },
+          {
+            "type": "text",
+            "id": "answer1_label",
+            "label": "Answer 1 Label",
+            "default": "Option 1"
+          },
+          {
+            "type": "text",
+            "id": "answer1_tag",
+            "label": "Answer 1 Tag",
+            "default": "option-1"
+          },
+          {
+            "type": "text",
+            "id": "answer2_label",
+            "label": "Answer 2 Label",
+            "default": "Option 2"
+          },
+          {
+            "type": "text",
+            "id": "answer2_tag",
+            "label": "Answer 2 Tag",
+            "default": "option-2"
+          },
+          {
+            "type": "text",
+            "id": "next_label",
+            "label": "Next Button Label",
+            "default": "Next"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Multi-step Quiz",
+        "blocks": [
+          {
+            "type": "question"
+          },
+          {
+            "type": "question"
+          },
+          {
+            "type": "question"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

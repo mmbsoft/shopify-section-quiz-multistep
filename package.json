@@ -1,0 +1,18 @@
+{
+	"scripts": {
+		"build:css": "sass assets/quiz-multistep.scss assets/quiz-multistep.css --no-source-map --style=compressed",
+		"watch:css": "sass --watch assets/quiz-multistep.scss:assets/quiz-multistep.css --style=expanded",
+		"build:js": "gulp minify-quiz-js --gulpfile gulpfile.js",
+		"build:js-css": "npm run build:css && npm run build:js"
+	},
+	"devDependencies": {
+		"gulp": "^5.0.1",
+		"gulp-autoprefixer": "^10.0.0",
+		"gulp-clean-css": "^4.3.0",
+		"gulp-rename": "^2.1.0",
+		"gulp-sass": "^6.0.1",
+		"gulp-sourcemaps": "^3.0.0",
+		"gulp-terser": "^2.1.0",
+		"sass": "^1.93.3"
+	}
+}
